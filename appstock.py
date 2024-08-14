@@ -11,29 +11,29 @@ import plotly.express as px
 from alpha_vantage.fundamentaldata import FundamentalData
 from stocknews import StockNews
 
-page_bg_img = """
-<style>
-/* Main Page Background */
-[data-testid="stAppViewContainer"] > .main {
-    background-image: url("https://i.imgur.com/4Nj5WcN.jpg");
-    background-size: cover; /* Cover the entire page */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent repeating */
-    background-attachment: fixed; /* Fix background image in place */
-    min-height: 100vh; /* Ensure it covers the full viewport height */
-}
+# page_bg_img = """
+# <style>
+# /* Main Page Background */
+# [data-testid="stAppViewContainer"] > .main {
+#     background-image: url("https://i.imgur.com/4Nj5WcN.jpg");
+#     background-size: cover; /* Cover the entire page */
+#     background-position: center; /* Center the background image */
+#     background-repeat: no-repeat; /* Prevent repeating */
+#     background-attachment: fixed; /* Fix background image in place */
+#     min-height: 100vh; /* Ensure it covers the full viewport height */
+# }
 
-[data-testid="stHeader"] {
-    background: rgba(0,0,0,0); /* Make header transparent */
-}
+# [data-testid="stHeader"] {
+#     background: rgba(0,0,0,0); /* Make header transparent */
+# }
 
-[data-testid="stToolbar"] {
-    right: 2rem; /* Adjust toolbar position */
-}
-</style>
-"""
+# [data-testid="stToolbar"] {
+#     right: 2rem; /* Adjust toolbar position */
+# }
+# </style>
+# """
 
-st.markdown(page_bg_img, unsafe_allow_html=True)
+# st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # st.markdown(
 #     """
