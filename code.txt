@@ -1,0 +1,154 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+get_ipython().run_line_magic('pip', 'install plotly')
+
+
+import numpy as np
+import pandas as pd
+import yfinance as yf
+import matplotlib.pyplot as plt
+import sklearn
+import plotly.express as px
+
+
+import tensorflow as tf
+from tensorflow import keras
+
+
+# Fetching data using Yfinance
+
+start = '2010-01-01' 
+end   = '2019-12-31'
+
+df = yf.download('AAPL', start= start,end= end) 
+
+df.head()
+
+
+df = df.reset_index()
+df.head()
+
+
+plt.plot(df.Close)
+
+
+ma100 = df.Close.rolling(100).mean()
+ma200 = df.Close.rolling(200).mean()
+
+
+plt.figure(figsize = (12,6) )
+plt.plot(df.Close)
+plt.plot(ma100,'red')
+plt.plot(ma200,'green')
+
+
+df.shape
+df.head()
+
+
+# #Spliiting Data into Test and Train
+
+data_train = pd.DataFrame(df['Close'][0:int(len(df)*0.7)])
+data_test = pd.DataFrame(df['Close'][int(len(df)*0.7):int(len(df))])
+
+print(data_train.shape)
+
+print(data_test.shape)
+
+
+from sklearn.preprocessing import MinMaxScaler
+Scaler = MinMaxScaler(feature_range=(0,1))
+
+
+data_train_array = Scaler.fit_transform(data_train)
+
+
+x_train = []
+y_train = []
+
+for i in range(100, data_train_array.shape [0]):
+    x_train.append(data_train_array[i-100 : i])
+    y_train.append(data_train_array[i, 0])
+
+x_train, y_train = np.array(x_train), np.array(y_train)
+
+
+from keras.layers import Dense, Dropout, LSTM
+from keras.models import Sequential
+
+
+model = Sequential()
+
+model.add(LSTM(units = 50, activation = 'relu', return_sequences = True,
+              input_shape = (x_train.shape[1],1)))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 60, activation = 'relu', return_sequences = True
+             ))
+model.add(Dropout(0.3))
+
+model.add(LSTM(units = 80, activation = 'relu', return_sequences = True))
+model.add(Dropout(0.4))
+
+model.add(LSTM(units = 120, activation = 'relu'))
+model.add(Dropout(0.5))
+
+model.add(Dense(units = 1))
+
+
+model.summary()
+
+
+model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+model.fit(x_train, y_train, epochs = 50)
+
+
+model.save('LSTMpredict.h5')
+
+
+past_100_days = data_train.tail(100)
+
+# Concatenate past_100_days and data_test along rows
+final_test_df = pd.concat([past_100_days, data_test], ignore_index=True)
+
+
+input_test_data = Scaler.fit_transform(final_test_df)
+
+
+import numpy as np
+
+x_test = []
+y_test = []
+
+for i in range(100, input_test_data.shape[0]):
+    x_test.append(input_test_data[i-100:i])  # Append slices of data for features
+    y_test.append(input_test_data[i, 0])     # Append the target value
+
+# Convert lists to numpy arrays
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+
+
+y_predicted = model.predict(x_test)
+
+
+y_predicted
+
+
+Scaler.scale_
+
+
+scale_factor = 1/0.02123255
+
+y_predicted = y_predicted*scale_factor
+y_test = y_test*scale_factor
+
+plt.figure(figsize = (12,6))
+plt.plot(y_test, 'b', label= 'Orignal Price')
+plt.plot(y_predicted, 'r', label= 'Predicted Price')
+plt.xlabel('Time')
+plt.ylabel('Price')
+plt.legend
+plt.show
+
